@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', showInfoContent);
-//document.addEventListener('DOMContentLoaded', fetchData);
+document.addEventListener('DOMContentLoaded', fetchData);
 document.getElementById('showInfo').addEventListener('click', showInfoContent);
 document.getElementById('showPricesToday').addEventListener("click", showPricesTodayContent);
 
@@ -7,8 +7,6 @@ let data = null;    // Alustetaan muuttuja, johon tallennetaan haettu data
 let loading = false; // Hallitsee tilaa, jos dataa haetaan parhaillaan
 
 async function fetchData() {
-    //document.getElementById('content').innerHTML =
-    //    '<p> Ladataan tietoja... Lataus voi kestää jopa minuutin, sillä palvelin toimii ilmaisella serverillä :)</p>';
     if (!loading && !data) {
         loading = true;
         const apiURL = 'https://proxy-server-electricity.onrender.com/api/prices';
@@ -210,9 +208,6 @@ function choosePricesDisplay(isTable) {
     return div;
 }
 
-function wait(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 function showInfoContent() {
     const contentDiv = document.getElementById('content');
@@ -300,260 +295,16 @@ function showCalculatorSection() {
 function countAveragePricePerKwh() {
     const consumption = document.getElementById('consumption').value;
     const priceOfBill = document.getElementById('priceOfBill').value;
-    console.log(parseFloat(priceOfBill) / parseFloat(consumption) / 100);
 
-    const averagePricePerKwh = (parseFloat(priceOfBill) / parseFloat(consumption) * 100).toFixed(2);
-    const resultSection = document.getElementById('resultSection');
-    resultSection.innerHTML = `<p>Keskimääräinen hinta sähkölle on ${averagePricePerKwh} snt/kWh</p>`;
+    if (consumption === '' || priceOfBill === '') {
+        resultSection.innerHTML = '<p>Syötä kulutus ja laskun hinta</p>';
+    } else {
+        const averagePricePerKwh = (parseFloat(priceOfBill) / parseFloat(consumption) * 100).toFixed(2);
+        const resultSection = document.getElementById('resultSection');
+        resultSection.innerHTML = `<p>Keskimääräinen hinta sähkölle on ${averagePricePerKwh} snt/kWh</p>`;
+    }
 }
 
-
-
-
-datax = {
-    prices: [
-        {
-            price: 7.62,
-            startDate: "2024-09-13T21:00:00.000Z",
-            endDate: "2024-09-13T22:00:00.000Z"
-        },
-        {
-            price: 9.946,
-            startDate: "2024-09-13T20:00:00.000Z",
-            endDate: "2024-09-13T21:00:00.000Z"
-        },
-        {
-            price: 12.539,
-            startDate: "2024-09-13T19:00:00.000Z",
-            endDate: "2024-09-13T20:00:00.000Z"
-        },
-        {
-            price: 13.736,
-            startDate: "2024-09-13T18:00:00.000Z",
-            endDate: "2024-09-13T19:00:00.000Z"
-        },
-        {
-            price: 23.795,
-            startDate: "2024-09-13T17:00:00.000Z",
-            endDate: "2024-09-13T18:00:00.000Z"
-        },
-        {
-            price: 27.611,
-            startDate: "2024-09-13T16:00:00.000Z",
-            endDate: "2024-09-13T17:00:00.000Z"
-        },
-        {
-            price: 23.266,
-            startDate: "2024-09-13T15:00:00.000Z",
-            endDate: "2024-09-13T16:00:00.000Z"
-        },
-        {
-            price: 23.845,
-            startDate: "2024-09-13T14:00:00.000Z",
-            endDate: "2024-09-13T15:00:00.000Z"
-        },
-        {
-            price: 27.62,
-            startDate: "2024-09-13T13:00:00.000Z",
-            endDate: "2024-09-13T14:00:00.000Z"
-        },
-        {
-            price: 27.619,
-            startDate: "2024-09-13T12:00:00.000Z",
-            endDate: "2024-09-13T13:00:00.000Z"
-        },
-        {
-            price: 31.365,
-            startDate: "2024-09-13T11:00:00.000Z",
-            endDate: "2024-09-13T12:00:00.000Z"
-        },
-        {
-            price: 31.375,
-            startDate: "2024-09-13T10:00:00.000Z",
-            endDate: "2024-09-13T11:00:00.000Z"
-        },
-        {
-            price: 36.267,
-            startDate: "2024-09-13T09:00:00.000Z",
-            endDate: "2024-09-13T10:00:00.000Z"
-        },
-        {
-            price: 40.344,
-            startDate: "2024-09-13T08:00:00.000Z",
-            endDate: "2024-09-13T09:00:00.000Z"
-        },
-        {
-            price: 31.384,
-            startDate: "2024-09-13T07:00:00.000Z",
-            endDate: "2024-09-13T08:00:00.000Z"
-        },
-        {
-            price: 43.766,
-            startDate: "2024-09-13T06:00:00.000Z",
-            endDate: "2024-09-13T07:00:00.000Z"
-        },
-        {
-            price: 44.819,
-            startDate: "2024-09-13T05:00:00.000Z",
-            endDate: "2024-09-13T06:00:00.000Z"
-        },
-        {
-            price: 31.375,
-            startDate: "2024-09-13T04:00:00.000Z",
-            endDate: "2024-09-13T05:00:00.000Z"
-        },
-        {
-            price: 19.204,
-            startDate: "2024-09-13T03:00:00.000Z",
-            endDate: "2024-09-13T04:00:00.000Z"
-        },
-        {
-            price: 15.063,
-            startDate: "2024-09-13T02:00:00.000Z",
-            endDate: "2024-09-13T03:00:00.000Z"
-        },
-        {
-            price: 17.226,
-            startDate: "2024-09-13T01:00:00.000Z",
-            endDate: "2024-09-13T02:00:00.000Z"
-        },
-        {
-            price: 16.315,
-            startDate: "2024-09-13T00:00:00.000Z",
-            endDate: "2024-09-13T01:00:00.000Z"
-        },
-        {
-            price: 16.462,
-            startDate: "2024-09-12T23:00:00.000Z",
-            endDate: "2024-09-13T00:00:00.000Z"
-        },
-        {
-            price: 19.245,
-            startDate: "2024-09-12T22:00:00.000Z",
-            endDate: "2024-09-12T23:00:00.000Z"
-        },
-        {
-            price: 12.558,
-            startDate: "2024-09-12T21:00:00.000Z",
-            endDate: "2024-09-12T22:00:00.000Z"
-        },
-        {
-            price: 13.105,
-            startDate: "2024-09-12T20:00:00.000Z",
-            endDate: "2024-09-12T21:00:00.000Z"
-        },
-        {
-            price: 15.744,
-            startDate: "2024-09-12T19:00:00.000Z",
-            endDate: "2024-09-12T20:00:00.000Z"
-        },
-        {
-            price: 31.489,
-            startDate: "2024-09-12T18:00:00.000Z",
-            endDate: "2024-09-12T19:00:00.000Z"
-        },
-        {
-            price: 49.358,
-            startDate: "2024-09-12T17:00:00.000Z",
-            endDate: "2024-09-12T18:00:00.000Z"
-        },
-        {
-            price: 31.386,
-            startDate: "2024-09-12T16:00:00.000Z",
-            endDate: "2024-09-12T17:00:00.000Z"
-        },
-        {
-            price: 31.38,
-            startDate: "2024-09-12T15:00:00.000Z",
-            endDate: "2024-09-12T16:00:00.000Z"
-        },
-        {
-            price: 18.821,
-            startDate: "2024-09-12T14:00:00.000Z",
-            endDate: "2024-09-12T15:00:00.000Z"
-        },
-        {
-            price: 16.948,
-            startDate: "2024-09-12T13:00:00.000Z",
-            endDate: "2024-09-12T14:00:00.000Z"
-        },
-        {
-            price: 17.938,
-            startDate: "2024-09-12T12:00:00.000Z",
-            endDate: "2024-09-12T13:00:00.000Z"
-        },
-        {
-            price: 14.194,
-            startDate: "2024-09-12T11:00:00.000Z",
-            endDate: "2024-09-12T12:00:00.000Z"
-        },
-        {
-            price: 12.67,
-            startDate: "2024-09-12T10:00:00.000Z",
-            endDate: "2024-09-12T11:00:00.000Z"
-        },
-        {
-            price: 12.338,
-            startDate: "2024-09-12T09:00:00.000Z",
-            endDate: "2024-09-12T10:00:00.000Z"
-        },
-        {
-            price: 11.303,
-            startDate: "2024-09-12T08:00:00.000Z",
-            endDate: "2024-09-12T09:00:00.000Z"
-        },
-        {
-            price: 13.442,
-            startDate: "2024-09-12T07:00:00.000Z",
-            endDate: "2024-09-12T08:00:00.000Z"
-        },
-        {
-            price: 18.161,
-            startDate: "2024-09-12T06:00:00.000Z",
-            endDate: "2024-09-12T07:00:00.000Z"
-        },
-        {
-            price: 16.315,
-            startDate: "2024-09-12T05:00:00.000Z",
-            endDate: "2024-09-12T06:00:00.000Z"
-        },
-        {
-            price: 10.005,
-            startDate: "2024-09-12T04:00:00.000Z",
-            endDate: "2024-09-12T05:00:00.000Z"
-        },
-        {
-            price: 1.685,
-            startDate: "2024-09-12T03:00:00.000Z",
-            endDate: "2024-09-12T04:00:00.000Z"
-        },
-        {
-            price: 0.056,
-            startDate: "2024-09-12T02:00:00.000Z",
-            endDate: "2024-09-12T03:00:00.000Z"
-        },
-        {
-            price: 0,
-            startDate: "2024-09-12T01:00:00.000Z",
-            endDate: "2024-09-12T02:00:00.000Z"
-        },
-        {
-            price: -0.001,
-            startDate: "2024-09-12T00:00:00.000Z",
-            endDate: "2024-09-12T01:00:00.000Z"
-        },
-        {
-            price: -0.001,
-            startDate: "2024-09-11T23:00:00.000Z",
-            endDate: "2024-09-12T00:00:00.000Z"
-        },
-        {
-            price: 0,
-            startDate: "2024-09-11T22:00:00.000Z",
-            endDate: "2024-09-11T23:00:00.000Z"
-        }
-    ]
-}
 
 class PriceAnalyzer {
     constructor(priceData) {
@@ -568,8 +319,6 @@ class PriceAnalyzer {
         })
         const averagePrice = parseFloat(sum) / this.priceData.length;
         return averagePrice;
-
-
     }
 
     // Palauttaa päivän suurimman hinnan ja indexin
