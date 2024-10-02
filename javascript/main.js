@@ -12,7 +12,7 @@ async function fetchData() {
         loading = true;
         const apiURL = 'https://api.porssisahko.net/v1/latest-prices.json';
         try {
-            const response = await fetch('apiURL');
+            const response = await fetch(apiURL);
             if (response.ok) {
                 console.log('Fetch successful:', response.status);
                 data = await response.json();
