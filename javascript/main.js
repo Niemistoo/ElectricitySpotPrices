@@ -6,12 +6,13 @@ document.getElementById('showPricesToday').addEventListener("click", showPricesT
 let data = null;    // Alustetaan muuttuja, johon tallennetaan haettu data
 let loading = false; // Hallitsee tilaa, jos dataa haetaan parhaillaan
 
+// Hakee sähkön hinta dataa API:sta
 async function fetchData() {
     if (!loading && !data) {
         loading = true;
-        const apiURL = 'https://proxy-server-electricity.onrender.com/api/prices';
+        const apiURL = 'https://api.porssisahko.net/v1/latest-prices.json';
         try {
-            const response = await fetch(apiURL);
+            const response = await fetch('apiURL');
             if (response.ok) {
                 console.log('Fetch successful:', response.status);
                 data = await response.json();
@@ -28,6 +29,7 @@ async function fetchData() {
     }
 };
 
+// Palauttaa taulukon kuluvan päivän tuntihinnoista
 function getPricesToday() {
     let pricesToday = [];
     let dateToday = new Date().toLocaleDateString();
@@ -39,10 +41,12 @@ function getPricesToday() {
                 hour: '2-digit',
                 minute: '2-digit'
             });
-            let price = new Intl.NumberFormat('us-US', {
+            // Hinta chartille täytyy olla muodossa 0.00
+            let price = new Intl.NumberFormat('en-US', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             }).format(content.price);
+            console.log(price);
             pricesToday.push({
                 time: time,
                 price: price
@@ -52,12 +56,13 @@ function getPricesToday() {
     return pricesToday;
 }
 
+// Luo taulukon sähkön hinnoista
 async function getPricesTodayTable() {
     if (!loading && !data) {
         console.log("Loading data...");
         document.getElementById('content').innerHTML =
             '<p> Ladataan tietoja... Lataus voi kestää jopa minuutin, sillä välityspalvelin toimii ilmaisella serverillä :)</p>';
-        data = await fetchData();   // Odottaa, että data on ladattu
+        data = await fetchData();
     }
 
     if (data) {
@@ -103,19 +108,25 @@ async function getPricesTodayTable() {
     }
 };
 
-function createPricesTodayChart(canvas) {
+// Luo kaavion sähkön hinnoista
+async function createPricesTodayChart() {
     if (!loading && !data) {
         console.log("Loading data...");
-        data = fetchData();   // Odottaa, että data on ladattu
+        data = await fetchData();
     }
     if (data) {
+        const canvas = document.createElement('canvas');
+        canvas.id = 'pricesChartCanvas';
+        const contentDiv = document.getElementById('content');
         const pricesToday = getPricesToday();
+        console.log(pricesToday);
+        contentDiv.appendChild(canvas);
         const pricesChart = new Chart(canvas, {
             type: "bar",
             data: {
                 labels: pricesToday.map(content => content.time),
                 datasets: [{
-                    label: "Sähkön Spot-Hinta",
+                    label: "Sähkön Spot-Hinta sis alv 25,5%",
                     data: pricesToday.map(content => content.price),
                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
                     borderColor: 'rgba(255, 99, 132, 1)',
@@ -129,7 +140,7 @@ function createPricesTodayChart(canvas) {
                     }
                 }
             }
-        })
+        });
     }
 }
 
@@ -144,11 +155,10 @@ async function showPricesTodayContent() {
         contentDiv.innerHTML = ''; // Tyhjennetään aiempi sisältö
         contentDiv.appendChild(choosePricesDisplay(true));
         contentDiv.appendChild(pricesTable); // Liitetään luotu taulukko DOM:iin
-    } else {
-        document.getElementById('content').innerHTML = '<p> Tietoja ladataan edelleen. Odota hetki...</p>';
     }
 };
 
+// Vaihtaa näkymää taulukon ja kaavion välillä
 document.addEventListener('change', async function (event) {
     if (event.target.name === 'price-display') {
         const contentDiv = document.getElementById('content');
@@ -159,15 +169,12 @@ document.addEventListener('change', async function (event) {
         } else if (event.target.value === 'chart') {
             contentDiv.innerHTML = ''; // Tyhjennetään aiempi sisältö
             contentDiv.appendChild(choosePricesDisplay(false));
-
-            const canvas = document.createElement('canvas');
-            canvas.id = 'pricesChartCanvas';
-            contentDiv.appendChild(canvas);
-            createPricesTodayChart(canvas);
+            createPricesTodayChart();
         }
     }
 });
 
+// Alustaa radio-napit taulukon ja kaavion valitsemiseen
 function choosePricesDisplay(isTable) {
     const div = document.createElement('div');
     div.classList.add('price-display');
