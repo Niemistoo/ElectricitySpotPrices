@@ -1,15 +1,15 @@
 document.addEventListener('DOMContentLoaded', showInfoContent);
-document.addEventListener('DOMContentLoaded', fetchData);
 document.getElementById('showInfo').addEventListener('click', showInfoContent);
 document.getElementById('showPricesToday').addEventListener("click", showPricesTodayContent);
 
-let data = null;    // Alustetaan muuttuja, johon tallennetaan haettu data
-let loading = false; // Hallitsee tilaa, jos dataa haetaan parhaillaan
+//let data = null;    // Alustetaan muuttuja, johon tallennetaan haettu data
+//let loading = false; // Hallitsee tilaa, jos dataa haetaan parhaillaan
 
 // Hakee sähkön hinta dataa API:sta
 async function fetchData() {
-    if (!loading && !data) {
+    /*if (!loading && !data) {
         loading = true;
+        */
         const apiURL = 'https://api.porssisahko.net/v1/latest-prices.json';
         try {
             const response = await fetch(apiURL);
@@ -26,7 +26,7 @@ async function fetchData() {
         } finally {
             loading = false;
         }
-    }
+    //}
 };
 
 // Palauttaa taulukon kuluvan päivän tuntihinnoista
@@ -58,15 +58,13 @@ function getPricesToday() {
 
 // Luo taulukon sähkön hinnoista
 async function getPricesTodayTable() {
-    if (!loading && !data) {
+    /*if (!loading && !data) {
         console.log("Loading data...");
-        document.getElementById('content').innerHTML =
-            '<p> Ladataan tietoja... Lataus voi kestää jopa minuutin, sillä välityspalvelin toimii ilmaisella serverillä :)</p>';
         data = await fetchData();
-    }
+    }*/
 
+    const data = await fetchData();
     if (data) {
-
         const table = document.createElement('table');
         table.classList.add('price-table'); // Lisätään luokka taulukolle (CSS)
         const thead = document.createElement('thead');
@@ -110,10 +108,12 @@ async function getPricesTodayTable() {
 
 // Luo kaavion sähkön hinnoista
 async function createPricesTodayChart() {
-    if (!loading && !data) {
+    /*if (!loading && !data) {
         console.log("Loading data...");
         data = await fetchData();
-    }
+    }*/
+
+        const data = await fetchData();
     if (data) {
         const canvas = document.createElement('canvas');
         canvas.id = 'pricesChartCanvas';
