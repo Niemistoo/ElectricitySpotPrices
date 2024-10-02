@@ -2,30 +2,26 @@ document.addEventListener('DOMContentLoaded', showInfoContent);
 document.getElementById('showInfo').addEventListener('click', showInfoContent);
 document.getElementById('showPricesToday').addEventListener("click", showPricesTodayContent);
 
-//let data = null;    // Alustetaan muuttuja, johon tallennetaan haettu data
-//let loading = false; // Hallitsee tilaa, jos dataa haetaan parhaillaan
 
 // Hakee sähkön hinta dataa API:sta
 async function fetchData() {
-    /*if (!loading && !data) {
-        loading = true;
-        */
-        const apiURL = 'https://api.porssisahko.net/v1/latest-prices.json';
-        try {
-            const response = await fetch(apiURL);
-            if (response.ok) {
-                console.log('Fetch successful:', response.status);
-                data = await response.json();
-                data.prices.reverse(); // Käännetään taulukko, jotta uusin hinta on ensimmäisenä
-                return data;
-            } else {
-                console.error('Fetch error:', response.status);
-            }
-        } catch (error) {
-            console.error('Fetch error:', error);
-        } finally {
-            loading = false;
+    const apiURL = 'https://proxy-server-electricity.onrender.com/api/prices';
+    try {
+        document.getElementById('content').innerHTML = '<p>Ladataan...</p>';
+        const response = await fetch(apiURL);
+        if (response.ok) {
+            console.log('Fetch successful:', response.status);
+            data = await response.json();
+            data.prices.reverse(); // Käännetään taulukko, jotta uusin hinta on ensimmäisenä
+            return data;
+        } else {
+            console.error('Fetch error:', response.status);
         }
+    } catch (error) {
+        console.error('Fetch error:', error);
+    } finally {
+        loading = false;
+    }
     //}
 };
 
@@ -46,7 +42,6 @@ function getPricesToday() {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             }).format(content.price);
-            console.log(price);
             pricesToday.push({
                 time: time,
                 price: price
@@ -58,11 +53,6 @@ function getPricesToday() {
 
 // Luo taulukon sähkön hinnoista
 async function getPricesTodayTable() {
-    /*if (!loading && !data) {
-        console.log("Loading data...");
-        data = await fetchData();
-    }*/
-
     const data = await fetchData();
     if (data) {
         const table = document.createElement('table');
@@ -107,49 +97,38 @@ async function getPricesTodayTable() {
 };
 
 // Luo kaavion sähkön hinnoista
-async function createPricesTodayChart() {
-    /*if (!loading && !data) {
-        console.log("Loading data...");
-        data = await fetchData();
-    }*/
-
-        const data = await fetchData();
-    if (data) {
-        const canvas = document.createElement('canvas');
-        canvas.id = 'pricesChartCanvas';
-        const contentDiv = document.getElementById('content');
-        const pricesToday = getPricesToday();
-        console.log(pricesToday);
-        contentDiv.appendChild(canvas);
-        const pricesChart = new Chart(canvas, {
-            type: "bar",
-            data: {
-                labels: pricesToday.map(content => content.time),
-                datasets: [{
-                    label: "Sähkön Spot-Hinta sis alv 25,5%",
-                    data: pricesToday.map(content => content.price),
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+function createPricesTodayChart() {
+    const canvas = document.createElement('canvas');
+    canvas.id = 'pricesChartCanvas';
+    const contentDiv = document.getElementById('content');
+    const pricesToday = getPricesToday();
+    contentDiv.appendChild(canvas);
+    const pricesChart = new Chart(canvas, {
+        type: "bar",
+        data: {
+            labels: pricesToday.map(content => content.time),
+            datasets: [{
+                label: "Sähkön Spot-Hinta sis alv 25,5%",
+                data: pricesToday.map(content => content.price),
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
                 }
             }
-        });
-    }
+        }
+    });
 }
 
 
 async function showPricesTodayContent() {
-
     const pricesTable = await getPricesTodayTable();
     if (pricesTable) {
-
         // Tyhjennetään 'content' ja liitetään uusi taulukko
         const contentDiv = document.getElementById('content');
         contentDiv.innerHTML = ''; // Tyhjennetään aiempi sisältö
