@@ -1,3 +1,4 @@
+/*Header stylings*/
 #site-header {
     background-color: #333;
     width: 100%;
@@ -8,9 +9,11 @@
     font-family: serif;
 }
 
+/*Body presets*/
 body {
     height: 100%;
     min-width: 20vh;
+    min-height: 100vh;
     color: #f4f4f4;
     background-color: #1d1c1c;
     font-family: Arial, sans-serif;
@@ -18,22 +21,41 @@ body {
     padding: 0;
 }
 
+/*Container styling. All the parts between header and footer*/
 .container {
     display: flex;
     width: 80%;
     flex-grow: 1;
 }
 
+/*Left-side navigation container*/
 aside {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     background-color: #000000;
     padding: 10px;
     width: 200px;
+    min-width: 150;
     min-height: 100vh;
     box-sizing: border-box;
     flex-shrink: 0;
 }
 
+aside nav {
+    width: 100%;
+}
+
+aside nav ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
 aside nav ul li {
+    width: 100%;
     margin-bottom: 10px;
     list-style-type: none;
 }
@@ -52,6 +74,15 @@ aside nav ul li button:hover {
     background-color: #89929b;
 }
 
+/* Clockdisplay on the left of page */
+#clock {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: white;
+    font-size: 1.2em;
+    margin-top: 20px;
+    text-align: center;
+}
+
 main {
     flex-grow: 1;
     padding: 20px;
@@ -65,6 +96,7 @@ main {
     margin: 20px auto;
 }
 
+/* Price-table Stylings */
 .price-table {
     width: 100%;
     max-width: 800px;
@@ -88,12 +120,18 @@ main {
     background-color: #535353;
 }
 
+.price-table tbody tr:hover {
+    background-color: #89929b;
+}
+
+/* Content loaded by JavaScript */
 #content {
     font-family: 'Arial', sans-serif;
     padding: 20px;
     line-height: 1.6;
 }
 
+/* "Tietoa"-page stylings */
 .info-class article {
     margin-bottom: 20px;
 }
@@ -122,6 +160,7 @@ main {
     margin-bottom: 5px;
 }
 
+/* "Laskuri page stylings */
 .calculator-content {
     display: flex;
     flex-direction: column;
@@ -170,6 +209,7 @@ main {
     background-color: #89929b;
 }
 
+/* Footer stylings */
 footer {
     background-color: #333;
     padding: 10px 0;

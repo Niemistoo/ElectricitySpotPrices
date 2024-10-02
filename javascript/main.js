@@ -1,13 +1,9 @@
 document.addEventListener('DOMContentLoaded', showInfoContent);
-document.getElementById('showInfo').addEventListener('click', showInfoContent);
-document.getElementById('showPricesToday').addEventListener("click", showPricesTodayContent);
-
 
 // Hakee sähkön hinta dataa API:sta
 async function fetchData() {
     const apiURL = 'https://proxy-server-electricity.onrender.com/api/prices';
     try {
-        document.getElementById('content').innerHTML = '<p>Ladataan...</p>';
         const response = await fetch(apiURL);
         if (response.ok) {
             console.log('Fetch successful:', response.status);
@@ -26,7 +22,8 @@ async function fetchData() {
 };
 
 // Palauttaa taulukon kuluvan päivän tuntihinnoista
-function getPricesToday() {
+async function getPricesToday() {
+    const data = await fetchData();
     let pricesToday = [];
     let dateToday = new Date().toLocaleDateString();
 
@@ -37,7 +34,7 @@ function getPricesToday() {
                 hour: '2-digit',
                 minute: '2-digit'
             });
-            // Hinta chartille täytyy olla muodossa 0.00
+            // Hinta kaaviolle täytyy olla muodossa 0.00
             let price = new Intl.NumberFormat('en-US', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
@@ -52,9 +49,9 @@ function getPricesToday() {
 }
 
 // Luo taulukon sähkön hinnoista
-async function getPricesTodayTable() {
-    const data = await fetchData();
-    if (data) {
+async function createPricesTodayTable() {
+    const pricesToday = await getPricesToday();
+    if (pricesToday) {
         const table = document.createElement('table');
         table.classList.add('price-table'); // Lisätään luokka taulukolle (CSS)
         const thead = document.createElement('thead');
@@ -73,7 +70,6 @@ async function getPricesTodayTable() {
         table.appendChild(thead);
 
         // Lisätään data osuus taulukkoon
-        let pricesToday = getPricesToday();
         pricesToday.forEach(content => {
             const row = document.createElement('tr');
 
@@ -97,11 +93,11 @@ async function getPricesTodayTable() {
 };
 
 // Luo kaavion sähkön hinnoista
-function createPricesTodayChart() {
+async function createPricesTodayChart() {
+    const pricesToday = await getPricesToday();
     const canvas = document.createElement('canvas');
     canvas.id = 'pricesChartCanvas';
     const contentDiv = document.getElementById('content');
-    const pricesToday = getPricesToday();
     contentDiv.appendChild(canvas);
     const pricesChart = new Chart(canvas, {
         type: "bar",
@@ -118,18 +114,19 @@ function createPricesTodayChart() {
         options: {
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    suggestedMin: 0
                 }
             }
         }
     });
 }
 
-
+document.getElementById('showPricesToday').addEventListener("click", showPricesTodayContent);
 async function showPricesTodayContent() {
-    const pricesTable = await getPricesTodayTable();
+    document.getElementById('content').innerHTML = '<p>Ladataan...</p>';
+    const pricesTable = await createPricesTodayTable();
     if (pricesTable) {
-        // Tyhjennetään 'content' ja liitetään uusi taulukko
         const contentDiv = document.getElementById('content');
         contentDiv.innerHTML = ''; // Tyhjennetään aiempi sisältö
         contentDiv.appendChild(choosePricesDisplay(true));
@@ -143,8 +140,7 @@ document.addEventListener('change', async function (event) {
         const contentDiv = document.getElementById('content');
         if (event.target.value === 'table') {
             contentDiv.innerHTML = ''; // Tyhjennetään aiempi sisältö
-            contentDiv.appendChild(choosePricesDisplay(true));
-            contentDiv.appendChild(await getPricesTodayTable());
+            showPricesTodayContent();
         } else if (event.target.value === 'chart') {
             contentDiv.innerHTML = ''; // Tyhjennetään aiempi sisältö
             contentDiv.appendChild(choosePricesDisplay(false));
@@ -194,7 +190,7 @@ function choosePricesDisplay(isTable) {
     return div;
 }
 
-
+document.getElementById('showInfo').addEventListener('click', showInfoContent);
 function showInfoContent() {
     const contentDiv = document.getElementById('content');
 
@@ -291,6 +287,16 @@ function countAveragePricePerKwh() {
     }
 }
 
+// Kellonajan näyttäminen
+setInterval(myTimer, 1000);
+function myTimer() {
+    const d = new Date();
+    document.getElementById("clock").innerHTML = d.toLocaleTimeString('fi-FI', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+}
 
 class PriceAnalyzer {
     constructor(priceData) {
@@ -298,7 +304,7 @@ class PriceAnalyzer {
     }
 
     // Palauttaa keskiarvon hinnasta
-    calculateAveragePrice() {
+    getAveragePrice() {
         let sum = 0;
         this.priceData.forEach(content => {
             sum += parseFloat(content.price);
@@ -308,7 +314,7 @@ class PriceAnalyzer {
     }
 
     // Palauttaa päivän suurimman hinnan ja indexin
-    calculateHighestPrice() {
+    getHighestPrice() {
         let highestPrice = 0;
         let highestPriceTime = '';
         this.priceData.forEach(content => {
