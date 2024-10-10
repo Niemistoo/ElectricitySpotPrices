@@ -59,6 +59,7 @@ body.light-mode #content {
 
 #navbar button:hover {
     background-color: #8f8f9a;
+    cursor: pointer;
 }
 
 .navbar-item {
@@ -175,7 +176,9 @@ input:checked+.slider:before {
     justify-content: center;
     align-items: center;
     width: 100%;
+    margin: 20px auto;
     text-align: center;
+    font-size: 1.5em;
 }
 
 /* Price Table */
@@ -187,6 +190,13 @@ input:checked+.slider:before {
     border-collapse: collapse;
     font-family: Arial, sans-serif;
     text-align: left;
+}
+
+#pricesChartCanvas {
+    width: 100%;
+    max-width: 60vw;
+    min-height: 200px;
+    margin: 20px auto;
 }
 
 .dark-mode .price-table th, .dark-mode .price-table td {

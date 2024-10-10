@@ -15,13 +15,10 @@ addEventListener('DOMContentLoaded', () => {
 
 function changeTheme() {
     const toggle = document.getElementById('mode-toggle');
-    console.log("hephephep");
     if (toggle.checked) {
         setDarkMode();
-        console.log("darkmode set")
     } else {
         setLightMode();
-        console.log("lightmode set")
     }
 };
 
