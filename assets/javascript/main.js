@@ -1,6 +1,41 @@
 document.addEventListener('DOMContentLoaded', showInfoContent);
 
-// Hakee sähkön hinta dataa API:sta
+// Theme setup
+addEventListener('DOMContentLoaded', () => {
+    const toggle = document.getElementById('mode-toggle');
+    const userPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (userPrefersDark) {
+            document.body.classList.add('dark-mode');
+            toggle.checked = true;
+        } else {
+            document.body.classList.add('light-mode');
+        }
+    }
+);
+
+function changeTheme() {
+    const toggle = document.getElementById('mode-toggle');
+    console.log("hephephep");
+    if (toggle.checked) {
+        setDarkMode();
+        console.log("darkmode set")
+    } else {
+        setLightMode();
+        console.log("lightmode set")
+    }
+};
+
+function setDarkMode() {
+    document.body.classList.replace('light-mode', 'dark-mode');
+    localStorage.setItem('theme', 'dark-mode');
+}
+
+function setLightMode() {
+    document.body.classList.replace('dark-mode', 'light-mode');
+    localStorage.setItem('theme', 'light-mode');
+}
+
+// Fetch electricity prices from API
 async function fetchData() {
     const apiURL = 'https://proxy-server-electricity.onrender.com/api/prices';
     try {
@@ -8,7 +43,7 @@ async function fetchData() {
         if (response.ok) {
             console.log('Fetch successful:', response.status);
             data = await response.json();
-            data.prices.reverse(); // Käännetään taulukko, jotta uusin hinta on ensimmäisenä
+            data.prices.reverse(); // Reverse the array to get the latest prices first
             return data;
         } else {
             console.error('Fetch error:', response.status);
@@ -18,10 +53,9 @@ async function fetchData() {
     } finally {
         loading = false;
     }
-    //}
 };
 
-// Palauttaa taulukon kuluvan päivän tuntihinnoista
+// Get electricity prices for today in array
 async function getPricesToday() {
     const data = await fetchData();
     let pricesToday = [];
@@ -30,11 +64,12 @@ async function getPricesToday() {
     data.prices.forEach(content => {
         let date = new Date(content.startDate).toLocaleDateString();
         if (date === dateToday) {
+            // Format time to 24-hour format
             let time = new Date(content.startDate).toLocaleTimeString('fi-FI', {
                 hour: '2-digit',
                 minute: '2-digit'
             });
-            // Hinta kaaviolle täytyy olla muodossa 0.00
+            // Format price to two decimal places
             let price = new Intl.NumberFormat('en-US', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
@@ -48,16 +83,16 @@ async function getPricesToday() {
     return pricesToday;
 }
 
-// Luo taulukon sähkön hinnoista
+// Create table for electricity prices
 async function createPricesTodayTable() {
     const pricesToday = await getPricesToday();
     if (pricesToday) {
         const table = document.createElement('table');
-        table.classList.add('price-table'); // Lisätään luokka taulukolle (CSS)
+        table.classList.add('price-table'); // Add class for styling price-table
         const thead = document.createElement('thead');
         const tbody = document.createElement('tbody');
 
-        // Luo taulukon otsikkorivi
+        // Add header rows to table
         const headerRow = document.createElement('tr');
         const timeHeader = document.createElement('th');
         timeHeader.textContent = 'Klo';
@@ -69,7 +104,7 @@ async function createPricesTodayTable() {
         thead.appendChild(headerRow);
         table.appendChild(thead);
 
-        // Lisätään data osuus taulukkoon
+        // Add content rows to table
         pricesToday.forEach(content => {
             const row = document.createElement('tr');
 
@@ -84,7 +119,7 @@ async function createPricesTodayTable() {
             tbody.appendChild(row);
         });
 
-        // Lisää tbody taulukkoon ja aseta sisältö DOM-puuhun
+        // Add average price and highest price to table
         table.appendChild(tbody);
         return table;
     } else {
@@ -92,7 +127,7 @@ async function createPricesTodayTable() {
     }
 };
 
-// Luo kaavion sähkön hinnoista
+// Create bar chart for electricity prices
 async function createPricesTodayChart() {
     const pricesToday = await getPricesToday();
     const canvas = document.createElement('canvas');
@@ -104,7 +139,7 @@ async function createPricesTodayChart() {
         data: {
             labels: pricesToday.map(content => content.time),
             datasets: [{
-                label: "Sähkön Spot-Hinta sis alv 25,5%",
+                label: "Hinta sis alv 25,5%",
                 data: pricesToday.map(content => content.price),
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 borderColor: 'rgba(255, 99, 132, 1)',
@@ -122,34 +157,35 @@ async function createPricesTodayChart() {
     });
 }
 
+// Show prices today content when first loaded
 document.getElementById('showPricesToday').addEventListener("click", showPricesTodayContent);
 async function showPricesTodayContent() {
     document.getElementById('content').innerHTML = '<p>Ladataan...</p>';
     const pricesTable = await createPricesTodayTable();
     if (pricesTable) {
         const contentDiv = document.getElementById('content');
-        contentDiv.innerHTML = ''; // Tyhjennetään aiempi sisältö
+        contentDiv.innerHTML = ''; // Empty the previous content
         contentDiv.appendChild(choosePricesDisplay(true));
-        contentDiv.appendChild(pricesTable); // Liitetään luotu taulukko DOM:iin
+        contentDiv.appendChild(pricesTable); // Add the table to the content div
     }
 };
 
-// Vaihtaa näkymää taulukon ja kaavion välillä
+// Toggle between table and chart
 document.addEventListener('change', async function (event) {
     if (event.target.name === 'price-display') {
         const contentDiv = document.getElementById('content');
         if (event.target.value === 'table') {
-            contentDiv.innerHTML = ''; // Tyhjennetään aiempi sisältö
+            contentDiv.innerHTML = ''; // Empty the previous content
             showPricesTodayContent();
         } else if (event.target.value === 'chart') {
-            contentDiv.innerHTML = ''; // Tyhjennetään aiempi sisältö
+            contentDiv.innerHTML = ''; // Empty the previous content
             contentDiv.appendChild(choosePricesDisplay(false));
             createPricesTodayChart();
         }
     }
 });
 
-// Alustaa radio-napit taulukon ja kaavion valitsemiseen
+// Create radio buttons for choosing prices display
 function choosePricesDisplay(isTable) {
     const div = document.createElement('div');
     div.classList.add('price-display');
@@ -190,6 +226,7 @@ function choosePricesDisplay(isTable) {
     return div;
 }
 
+// Info content
 document.getElementById('showInfo').addEventListener('click', showInfoContent);
 function showInfoContent() {
     const contentDiv = document.getElementById('content');
@@ -200,27 +237,35 @@ function showInfoContent() {
                 <h2>Tietoa Sivustosta</h2>
                 <p>Tämä sivusto tarjoaa ajankohtaista tietoa sähkön spot-hinnoista ja auttaa sinua seuraamaan energiankulutustasi.</p>
             </section>
+
             <section>
                 <h2>Sähkön Spot-Hinta</h2>
                 <p>Sähkön spot-hinta määräytyy tunneittain ja sen perusteella lasketaan sähkölaskusi.</p>
             </section>
+
             <section>
+
                 <h2>Sähkölaskun Muodostuminen</h2>
                 <p>
                     Sähkölaskusi muodostuu kahdesta osasta, kulutuslaskusta (Sähkön myyjä) sekä sähkönsiirtolaskusta (Paikallinen sähköverkon ylläpitäjä).
                     Siirtomaksuun vaikuttaa sopimuspaikkasi ja sähkönkulutuksesi. Sähkönsiirto on aina kiinteä hinta, joka ei muutu kulutuksen mukaan.
-                    <br><br>
+                </p>
+
+                <p>
                     Kulutuslasku koostuu sopimustyypin mukaan. Yleisimmät ovat Pörssisähkö, kiinteä kWh-sopimus ja Kiinteä kk-maksu.
                     Sekä nykyisin Kiinteä kWh-sopimus, johon lisätään *kulutusvaikutus.
                 </p>
+
                 <h2>Sopimustyypit</h2>
                 <p>Yleisimmät sopimustyypit</p>
+
                 <h3>Pörssisähkö</h3>
                 <ul>
                     <li>Spot-hinta: Käyttötunnin mukainen kWh hinta</li>
                     <li>Perusmaksu: Kiinteä kuukausimaksu</li>
                     <li>Verot: 25,5% (1.9.2024 lähtien, aiemmin 24%)</li>
                 </ul>
+
                 <h3>Kiinteä kWh-sopimus</h3>
                 <ul>
                     <li>Hinta: Kiinteä hinta per kWh</li>
@@ -228,6 +273,7 @@ function showInfoContent() {
                     <li>(Kulutusvaikutus*): Määräytyy kulutuksen spot-hinnan päivän keskiarvon mukaan käytetäänkö sähköä keskiarvoa halvemmilla vai kalliimmilla tunneilla</li>
                     <li>Verot: Sis kWh-hintaan alv. 25,5% (1.9.2024 lähtien, aiemmin 24%)</li>
                 </ul>
+
                 <h3>Kiinteä kk-maksu</h3>
                 <ul>
                     <li>Hinta: Kiinteä kuukausimaksu</li>
@@ -246,10 +292,11 @@ function showCalculatorSection() {
     contentDiv.innerHTML = "";
 
     const formHTML = `
-        <h2>Sähkön Kilowattituntihinnan Laskuri</h2>
+        <h2>Hintalaskuri</h2>
         <section id="calculator-section">
-            <p> Tämän laskurin avulla voit laskea aiempien laskujesi keskimääräisen kilowattituntihinnan.
+            <p> Tämän laskurin avulla voit laskea aiempien laskujesi keskimääräisen kilowattituntihinnan suhteessa laskuun.
                 Sisällytä hintaan koko laskun hinta ja kulutus kilowattitunteina, mahdollinen kuukausimaksu mukaanlukien.
+                Näin voit vertailla helposti eri sähkösopimusten todellisia hintoja.
             </p>
             <form>
                 <label for="consumption">Kulutus kWh:</label>
@@ -258,7 +305,7 @@ function showCalculatorSection() {
                 <label for="priceOfBill">Laskun hinta:</label>
                 <input id="priceOfBill" type="number">
                 
-                <button id="countAveragePricePerKwhButton">Laske</button>
+                <button id="calculator-button">Laske</button>
             </form>
         </section>
         <section id="resultSection">
@@ -268,7 +315,7 @@ function showCalculatorSection() {
 
     contentDiv.insertAdjacentHTML('beforeend', formHTML);
 
-    document.getElementById('countAveragePricePerKwhButton').addEventListener('click', function (event) {
+    document.getElementById('calculator-button').addEventListener('click', function (event) {
         event.preventDefault();
         countAveragePricePerKwh();
     });
@@ -287,23 +334,22 @@ function countAveragePricePerKwh() {
     }
 }
 
-// Kellonajan näyttäminen
+// Show Clock
 setInterval(myTimer, 1000);
 function myTimer() {
     const d = new Date();
     document.getElementById("clock").innerHTML = d.toLocaleTimeString('fi-FI', {
         hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
+        minute: '2-digit'
     });
 }
 
-class PriceAnalyzer {
+class PriceAnalyser {
     constructor(priceData) {
         this.priceData = priceData;
     }
 
-    // Palauttaa keskiarvon hinnasta
+    // Get average price of the day
     getAveragePrice() {
         let sum = 0;
         this.priceData.forEach(content => {
@@ -313,7 +359,7 @@ class PriceAnalyzer {
         return averagePrice;
     }
 
-    // Palauttaa päivän suurimman hinnan ja indexin
+    // Get highest price of the day
     getHighestPrice() {
         let highestPrice = 0;
         let highestPriceTime = '';

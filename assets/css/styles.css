@@ -1,0 +1,235 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+/* Body */
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    font-family: 'Source Sans Pro', sans-serif;
+    transition: background-color 0.5s, color 0.5s;
+}
+
+/* Theme Color */
+body.dark-mode {
+    background-color: rgb(30, 30, 30);
+    color: #fff;
+}
+
+body.dark-mode #content {
+    background-color: #292a2c;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+
+body.light-mode {
+    background-color: #eaeff2;
+    color: #000;
+}
+
+body.light-mode #content {
+    background-color: #eaeff2;
+    border: 1px solid #292a2c;
+}
+
+
+/* NavBar */
+#navbar {
+    flex: auto;
+    width: 100%;
+    height: 50px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    background-color: #363636;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+#navbar button {
+    height:100%;
+    color: #fff;
+    background-color: #363636;
+}
+
+#navbar button:hover {
+    background-color: #8f8f9a;
+}
+
+.navbar-item {
+    padding-inline: 15px;
+    justify-content: center;
+    align-content: center;
+    height: 100%;
+}
+
+#clock {
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    text-align: center;
+    color: #fff;
+}
+
+/* Theme Toggle */
+.toggle-container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px; 
+}
+
+.switch {
+    display: inline-block;
+    height: 20px;
+    position: relative;
+    width: 40px;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    background-color: gray;
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: .4s;
+}
+
+.slider:before {
+    background-color: rgb(155, 153, 153);
+    ;
+    content: "";
+    height: 20px;
+    left: 0px;
+    position: absolute;
+    transition: .4s;
+    width: 20px;
+}
+
+input:checked+.slider {
+    background-color: white;
+}
+
+input:checked+.slider:before {
+    transform: translateX(21px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+#dark-icon {
+    width: auto;
+    height: 20px;
+    margin-left: 5px;
+}
+
+#light-icon {
+    width: auto;
+    height: 20px;
+    margin-right: 5px;
+}
+
+/* Header */
+#site-header {
+    margin-top: 60px;
+    text-align: center;
+}
+
+/* Main Content Container*/
+.container {
+    flex: 1;
+    margin: 20px;
+    padding: 20px;
+}
+
+.container h2 {
+    margin-top: 20px;
+}
+
+.container p {
+    margin-bottom: 15px;
+    padding-left: 20px;
+}
+
+#content {
+    padding: 20px;
+}
+
+.price-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+}
+
+/* Price Table */
+.price-table {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    margin: 20px auto;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    text-align: left;
+}
+
+.dark-mode .price-table th, .dark-mode .price-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+
+.light-mode .price-table th, .light-mode .price-table td {
+    padding: 12px 15px;
+    border: 1px solid #535353;
+}
+
+.price-table thead {
+    background-color: #333;
+    color: rgb(252, 252, 252);
+}
+
+.price-table tbody tr:nth-child(even) {
+    background-color: #535353;
+}
+
+.price-table tbody tr:hover {
+    background-color: #89929b;
+}
+
+/* Calculator */
+.calculator-content label, .calculator-content input {
+    display: block;
+    margin: 10px 0;
+}
+
+/* Footer */
+.footer {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    height: 30px;
+    width: 100%;
+    background-color: #333;
+    color: #fff;
+}
+
+.footer a {
+    text-decoration: none;
+    color: #fff;
+}

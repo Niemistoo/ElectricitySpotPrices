@@ -6,40 +6,47 @@
     <meta lang="en">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sähkön Spot-hinta</title>
-    <link href="./css/style.css" rel="stylesheet" type="text/css">
-    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <link href="assets/css/styles.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
+    <!-- Navbar -->
+    <nav id="navbar">
+        <button class="navbar-item" id="showInfo">Tietoa</button>
+        <button class="navbar-item" id="showPricesToday">Päivän Tuntihinnat</button>
+        <button class="navbar-item" id="showCalculator">Laskuri</button>
+        <p class="navbar-item" id="clock"></p>
+        <!-- Theme Toggle -->
+        <div  id="toggle-theme" class="toggle-container">
+            <img id="light-icon" src="/assets/images/light-icon.png" alt="sun">
+            <label class="switch">
+                <input type="checkbox" id="mode-toggle" onchange=changeTheme()>
+                <span class="slider round"></span>
+            </label>
+            <img id="dark-icon" src="/assets/images/dark-icon.png" alt="moon">
+        </div>
+    </nav>
+
+    <!-- Header -->
     <header id="site-header">
         <h1> Sähkön Spot-hinta</h1>
     </header>
-    <div class="container">
-        <aside>
-            <nav>
-                <ul>
-                    <li><button id="showInfo">Tietoa</button></li>
-                    <li><button id="showPricesToday">Päivän Tuntihinnat</button></li>
-                    <!-- <li><button id="showPriceNow">Hinta nyt</button></li> -->
-                    <li><button id="showCalculator">Laskuri</li>
-                </ul>
-                <p id="clock"></p>
-            </nav>
-        </aside>
 
-        <main>
-            <section id="content">
-                <!-- Sisältö päivittyy tähän -->
-            </section>
-        </main>
-    </div>
-    <footer>
+    <main class="container">
+        <section id="content">
+            <!-- Content updates here -->
+        </section>
+    </main>
+
+    <footer class="footer">
         <a href="https://www.GitHub.com/Niemistoo/" target="_blank">GitHub: Niemistoo <img
-                src="./images/github-mark-white.png" alt="Github" width="20" height="20"></a>
+                src="assets/images/github-mark-white.png" alt="Github" width="20" height="20"></a>
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-    <script src="./javascript/main.js"></script>
+    <script src="assets/javascript/main.js"></script>
 
 </body>
 
