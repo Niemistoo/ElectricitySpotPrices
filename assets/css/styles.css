@@ -63,7 +63,7 @@ body.light-mode #content {
 }
 
 .navbar-item {
-    padding-inline: 15px;
+    padding: clamp(5px, 2vw, 15px); /* Responsive padding */
     justify-content: center;
     align-content: center;
     height: 100%;
@@ -78,7 +78,7 @@ body.light-mode #content {
 /* Theme Toggle */
 .toggle-container {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: nowrap;  
     justify-content: center;
     align-items: center;
     margin-right: 10px; 
