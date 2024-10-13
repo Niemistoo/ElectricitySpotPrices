@@ -8,6 +8,8 @@ Content may load slowly at first, because there is private proxy-server that rou
 
 The Idea for the topic of the page came from that I wanted to create something useful and that I can include all the required elements to be present for the grading. The grading requirements are listed below.
 
+Link to my website: https://niemistoo.github.io/ElectricitySpotPrices/
+
 ## HTML
 Part of the HTML is loaded by JavaScript
 
