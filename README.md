@@ -8,6 +8,8 @@ Content may load slowly at first, because there is a private proxy-server that r
 
 The Idea for the topic of the page came from that I wanted to create something useful and that I can include all the required elements to be present for the grading. The grading requirements are listed below. Index row of file is presented in parenthesis e.g. (index.html, 9)
 
+Link to my website: https://niemistoo.github.io/ElectricitySpotPrices/
+
 ## HTML
 Part of the HTML is loaded by JavaScript
 
