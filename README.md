@@ -63,6 +63,6 @@ Part of the HTML is loaded by JavaScript
 5. - [x] Effective use of asynchronous data to enhance user experience (like filtering, sorting)
     - Data is converted to json Object and array. Data is projected as Päivän Tuntihinnat content(main.js 36-224)
 
-# Other
+## Other
 
 Data is fetched from https://api.porssisahko.net/v1/latest-prices.json. Code uses proxy-server because of CORS-handling.
